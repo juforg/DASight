@@ -26,6 +26,7 @@ import HomeContext from '@/pages/api/home/home.context';
 import { ChatInput } from './ChatInput';
 import { ChatLoader } from './ChatLoader';
 import { MemoizedChatMessage } from './MemoizedChatMessage';
+import { DataFileUpload } from './DataFileUpload';
 
 import { v4 as uuidv4 } from 'uuid';
 import { InteractionModal } from '@/components/Chat/ChatInteractionMessage';
@@ -943,6 +944,105 @@ export const Chat = () => {
           onScroll={handleScroll}
         >
           <ChatHeader webSocketModeRef={webSocketModeRef} />
+          
+          {/* 当没有消息时显示文件上传区域 */}
+          {selectedConversation?.messages.length === 0 && (
+            <div className="flex flex-col items-center justify-start min-h-[calc(100vh-300px)] px-4 py-12">
+              <div className="w-full max-w-4xl space-y-12">
+                {/* 主标题区域 */}
+                <div className="text-center space-y-4">
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    🔍 数据洞察助手
+                  </h2>
+                  <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                    智能分析您的数据，生成专业图表，发现隐藏洞察
+                  </p>
+                </div>
+
+                {/* 文件上传组件 */}
+                <div className="w-full max-w-2xl mx-auto">
+                  <DataFileUpload 
+                    onFileUpload={(file, data) => {
+                      console.log('文件上传成功:', file.name, data);
+                      // 触发文件处理消息
+                      const fileProcessMessage = {
+                        role: 'user' as const,
+                        content: `我刚上传了一个数据文件 "${file.name}" (${(file.size / 1024 / 1024).toFixed(2)} MB)。请帮我分析这个文件的基本信息。`
+                      };
+                      setCurrentMessage(fileProcessMessage);
+                      handleSend(fileProcessMessage, 0);
+                    }}
+                  />
+                </div>
+                
+                {/* 功能介绍区域 */}
+                <div className="w-full max-w-3xl mx-auto">
+                  <div className="text-center space-y-8">
+                    <div className="space-y-3">
+                      <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
+                        🚀 开始数据分析之旅
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        上传文件或直接在输入框中提问
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800 hover:shadow-md transition-shadow">
+                        <div className="flex items-start space-x-3">
+                          <span className="text-2xl flex-shrink-0">📊</span>
+                          <div className="text-left">
+                            <h4 className="font-semibold text-blue-700 dark:text-blue-300 mb-2">
+                              支持格式
+                            </h4>
+                            <p className="text-blue-600 dark:text-blue-400 text-sm">
+                              CSV, Excel (.xlsx/.xls)
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800 hover:shadow-md transition-shadow">
+                        <div className="flex items-start space-x-3">
+                          <span className="text-2xl flex-shrink-0">🎯</span>
+                          <div className="text-left">
+                            <h4 className="font-semibold text-green-700 dark:text-green-300 mb-2">
+                              核心功能
+                            </h4>
+                            <p className="text-green-600 dark:text-green-400 text-sm">
+                              统计分析，图表生成，数据洞察
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 示例问题 */}
+                    <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                      <h4 className="font-semibold text-gray-800 dark:text-white mb-4">
+                        💭 试试这些问题
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                        <div className="text-gray-600 dark:text-gray-400">
+                          • "分析这个数据的分布特征"
+                        </div>
+                        <div className="text-gray-600 dark:text-gray-400">
+                          • "生成销售趋势图表"
+                        </div>
+                        <div className="text-gray-600 dark:text-gray-400">
+                          • "找出异常数据点"
+                        </div>
+                        <div className="text-gray-600 dark:text-gray-400">
+                          • "制作数据透视表"
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
           {selectedConversation?.messages.map((message, index) => (
             <MemoizedChatMessage
               key={index}

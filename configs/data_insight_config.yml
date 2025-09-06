@@ -1,0 +1,122 @@
+# 数据洞察助手 MCP 服务集成配置
+# 基于NVIDIA NeMo Agent Toolkit + MCP服务
+
+general:
+  use_uvloop: true
+
+# MCP 服务配置
+mcp_servers:
+  # AntV 图表生成服务
+  antv_charts:
+    command: "npx"
+    args: ["@antv/mcp-server-chart"]
+    transport: "stdio"
+    
+  # Excel 专业处理服务
+  excel_handler:
+    command: "npx"
+    args: ["@yzfly/mcp-excel-server"]
+    transport: "stdio"
+    
+  # Pandas 数据分析服务
+  pandas_analysis:
+    command: "python"
+    args: ["-m", "pandas_mcp_server"]
+    transport: "stdio"
+
+# 函数定义（集成MCP工具）
+functions:
+  # 基础工具
+  current_datetime:
+    _type: current_datetime
+    description: "获取当前日期和时间"
+    
+  internet_search:
+    _type: tavily_internet_search
+    description: "使用Tavily API进行实时网络搜索"
+
+  # MCP集成的数据分析工具
+  mcp_chart_generator:
+    _type: mcp_tool_wrapper
+    url: "mcp://antv_charts"
+    mcp_tool_name: generate_chart
+    description: "使用AntV生成专业图表，支持25+种图表类型"
+    
+  mcp_excel_processor:
+    _type: mcp_tool_wrapper  
+    url: "mcp://excel_handler"
+    mcp_tool_name: process_excel
+    description: "专业Excel文件处理，支持复杂Excel操作"
+    
+  mcp_pandas_analysis:
+    _type: mcp_tool_wrapper
+    url: "mcp://pandas_analysis" 
+    mcp_tool_name: analyze_dataframe
+    description: "基于pandas的高级数据分析功能"
+
+  # 自定义数据洞察工具
+  data_insight_coordinator:
+    _type: data_insight_coordinator
+    description: "协调各种数据分析工具，提供统一的数据洞察体验"
+
+# LLM 配置
+llms:
+  default_llm:
+    _type: openai
+    model_name: "qwen-plus"
+    api_key: "sk-c200bb14290e48bf912ec2dc93b5bc2b"
+    base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    temperature: 0.7
+    max_tokens: 2048
+
+# Workflow 配置
+workflow:
+  _type: react_agent
+  tool_names:
+    # 核心数据分析工具（MCP集成）
+    - mcp_pandas_analysis
+    - mcp_chart_generator
+    - mcp_excel_processor
+    # 协调工具
+    - data_insight_coordinator
+    # 辅助工具
+    - current_datetime
+    - internet_search
+  llm_name: default_llm
+  verbose: true
+  parse_agent_response_max_retries: 3
+  max_iterations: 20
+  
+  # 数据洞察助手专用配置
+  additional_instructions: |
+    🔍 你是DASight数据洞察助手，基于NVIDIA NeMo Agent Toolkit构建。
+    
+    🎯 核心使命：
+    - 专业的CSV/Excel数据分析
+    - 智能化数据可视化
+    - 深度数据洞察与建议
+    - 自然语言数据交互
+    
+    🛠️ 工具使用策略：
+    1. 文件处理：优先使用 mcp_excel_processor 处理Excel，mcp_pandas_analysis 处理CSV
+    2. 数据分析：使用 mcp_pandas_analysis 进行统计分析和数据探索
+    3. 图表生成：使用 mcp_chart_generator (AntV) 生成专业图表
+    4. 整体协调：使用 data_insight_coordinator 统一管理分析流程
+    
+    📊 分析流程：
+    1. 文件上传 → 自动解析和预览
+    2. 用户查询 → 智能意图识别  
+    3. 数据分析 → 调用相应MCP服务
+    4. 结果呈现 → 图表+文字+洞察
+    
+    💡 交互原则：
+    - 始终以用户友好的方式呈现复杂数据分析结果
+    - 主动提供数据洞察和业务建议
+    - 支持中文自然语言交互
+    - 出错时提供清晰的解决方案
+    
+    🚀 高级功能：
+    - 自动图表类型推荐
+    - 数据质量评估
+    - 异常值检测和解释
+    - 趋势分析和预测建议

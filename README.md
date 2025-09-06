@@ -183,9 +183,17 @@ DASight/
 │   └── hackathon_config.yml   # 主配置文件
 ├── src/                        # 源代码
 │   └── aiq/                    # AIQ核心逻辑
+│   └── data-insight/               # ✅ 新建数据洞察模块
+│     ├── __init__.py           # 模块初始化
+│     ├── file_handler/         # 文件处理模块
+│     ├── data_analyzer/        # 数据分析模块  
+│     ├── visualization/        # 可视化模块
+│     ├── chat_interface/       # 对话接口模块
+│     └── data_insight_tools.py # 核心工具实现
 ├── data/                       # 数据目录 (运行时创建)
 │   ├── uploads/                # 上传文件存储
-│   └── processed/              # 处理后数据
+│   ├── processed/              # 处理后数据
+│   └── exports/                # 导出结果
 ├── install.sh                  # Linux/macOS安装脚本
 ├── install.bat                 # Windows安装脚本
 ├── start.sh                    # 启动脚本
