@@ -1,21 +1,19 @@
 #!/usr/bin/env python3
 """
-数据洞察助手 - 文件处理模块
-负责CSV/Excel文件的上传、解析和预处理
+数据洞察助手 - 数据分析模块
+包含基础分析、图表生成和流程协调功能
 """
 
-from .file_handler import FileHandler
-from .data_analyzer import DataAnalyzer  
-from .visualization import ChartGenerator
-from .chat_interface import ChatInterface
+from .basic_analyzer import BasicDataAnalyzer
+from .chart_connector import AntVChartConnector
+from .coordinator import DataInsightCoordinator
 
 __all__ = [
-    'FileHandler',
-    'DataAnalyzer', 
-    'ChartGenerator',
-    'ChatInterface'
+    'BasicDataAnalyzer',
+    'AntVChartConnector', 
+    'DataInsightCoordinator'
 ]
 
 __version__ = "1.0.0"
 __author__ = "DASight Team"
-__description__ = "数据洞察助手核心模块"
+__description__ = "数据洞察助手核心分析模块"

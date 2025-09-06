@@ -964,10 +964,10 @@ export const Chat = () => {
                   <DataFileUpload 
                     onFileUpload={(file, data) => {
                       console.log('文件上传成功:', file.name, data);
-                      // 触发文件处理消息
+                      // 触发文件处理消息，传递完整文件路径
                       const fileProcessMessage = {
                         role: 'user' as const,
-                        content: `我刚上传了一个数据文件 "${file.name}" (${(file.size / 1024 / 1024).toFixed(2)} MB)。请帮我分析这个文件的基本信息。`
+                        content: `我刚上传了一个数据文件 "${data.fullPath || file.name}" (${(file.size / 1024 / 1024).toFixed(2)} MB)。请帮我分析这个文件的基本信息。`
                       };
                       setCurrentMessage(fileProcessMessage);
                       handleSend(fileProcessMessage, 0);

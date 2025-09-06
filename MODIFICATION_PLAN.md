@@ -15,9 +15,12 @@
 - [x] 更新依赖包，添加数据处理相关库
 
 #### 1.2 MCP服务集成准备
-- [ ] 添加 @reading-plus-ai/mcp-server-data-exploration 服务配置
-- [ ] 添加 @hustcc/mcp-echarts 服务配置
-- [ ] 配置MCP服务器连接和认证
+- [x] 添加 @antv/mcp-server-chart 服务配置和测试
+- [x] 创建基础数据分析器 (BasicDataAnalyzer)
+- [x] 创建图表连接器 (AntVChartConnector)  
+- [x] 创建数据洞察协调器 (DataInsightCoordinator)
+- [x] 端到端功能测试验证通过
+- [ ] 集成到NeMo Agent Toolkit配置
 
 #### 1.3 前端界面基础调整 (对应优先级1-1)
 - [x] 修改页面标题为"数据洞察助手"

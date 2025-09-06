@@ -18,6 +18,29 @@ export const DataFileUpload: React.FC<FileUploadProps> = ({
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // 保存文件到后端的uploads目录
+  const saveFileToUploads = async (file: File, fileData: ArrayBuffer): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error(`上传失败: ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      return result.filePath; // 返回完整文件路径
+    } catch (error) {
+      console.error('文件上传错误:', error);
+      throw new Error(`文件保存失败: ${error.message}`);
+    }
+  };
+
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -65,11 +88,16 @@ export const DataFileUpload: React.FC<FileUploadProps> = ({
         reader.readAsArrayBuffer(file);
       });
 
+      // 保存文件到本地uploads目录
+      const savedFilePath = await saveFileToUploads(file, fileData as ArrayBuffer);
+
       const fileInfo = {
         name: file.name,
         size: file.size,
         type: file.type,
         lastModified: file.lastModified,
+        // 传递完整的文件路径
+        fullPath: savedFilePath,
         data: fileData
       };
 
